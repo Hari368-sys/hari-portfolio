@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task 1 — ESP32 Web Server &amp; HTML LED Control | Week 7 | ProtoSem — Hariprasad V</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap">
+<style>:root{--grey:#f3f3f3;--dark:#191917;--ink:#191917;--mut:rgba(25,25,23,.6);--faint:rgba(25,25,23,.3);--line:rgba(25,25,23,.2);--onm:rgba(255,255,255,.6)}
+html{font-size:16px;scroll-behavior:smooth}*{box-sizing:border-box;margin:0;padding:0}
+a{color:inherit;text-decoration:none}ul,ol{list-style:none}
+body{background:#fff;color:var(--ink);font-family:"Satoshi",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;font-weight:400;letter-spacing:-.01em;line-height:1.12}
+.pf{font-family:"Playfair Display",Georgia,serif}.it{font-family:"Playfair Display",Georgia,serif;font-style:italic}
+header{position:fixed;inset-inline:0;top:0;z-index:50;color:#fff;mix-blend-mode:difference;display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem}
+@media(min-width:1024px){header{padding:1.25rem 3rem}}
+.logo{display:flex;align-items:center;gap:.75rem}.logo i{width:.625rem;height:.625rem;border:1px solid currentColor;transform:rotate(45deg)}
+.logo span{font-family:"Playfair Display",serif;font-style:italic;font-size:1.125rem;letter-spacing:.04em}
+header nav{display:none;gap:2rem}header nav a{font-size:.875rem;text-transform:uppercase;letter-spacing:.14em}
+@media(min-width:900px){header nav{display:flex}}
+.eb{display:inline-flex;align-items:center;gap:.75rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:var(--mut)}.eb:before{content:"";width:2rem;height:1px;background:var(--mut)}
+.c{max-width:90rem;margin-inline:auto;padding:0 1.5rem}@media(min-width:1024px){.c{padding:0 3rem}}
+.top{padding:9rem 0 3rem}.top h1{font-size:2.5rem;margin-top:1.5rem;max-width:20ch}@media(min-width:1024px){.top h1{font-size:4.5rem}}
+.lead{font-size:1.125rem;line-height:1.625;color:var(--mut);max-width:52ch;margin-top:1.5rem}
+.tabs{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2.5rem}
+.tabs a{border:1px dashed var(--line);padding:.6rem 1.1rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.14em;transition:background .4s,color .4s}
+.tabs a:hover,.tabs a.on{background:var(--ink);color:#fff}
+.lay{display:grid;gap:3rem;padding-bottom:6rem}@media(min-width:1024px){.lay{grid-template-columns:1fr 17rem;gap:4rem}}
+section.s{border-top:1px dashed var(--line);padding:3rem 0;scroll-margin-top:6rem}
+section.s>h2{font-size:2rem;display:flex;gap:1.25rem;align-items:baseline}section.s>h2 small{font-family:"Satoshi",sans-serif;font-size:.8rem;letter-spacing:.18em;color:var(--faint)}
+section.s p,section.s li{color:var(--mut);line-height:1.7;font-size:1.0625rem}section.s>p{margin-top:1.25rem;max-width:62ch}
+h3{font-size:1.35rem;font-weight:500;margin-top:2rem}h3+p,h3+ul{margin-top:.6rem}
+.ul li{padding:.5rem 0;border-bottom:1px dashed var(--line)}.ul{margin-top:1rem;max-width:62ch}
+ol.n{margin-top:1rem;counter-reset:n;max-width:62ch}ol.n li{counter-increment:n;padding:.6rem 0 .6rem 2.5rem;position:relative;border-bottom:1px dashed var(--line)}ol.n li:before{content:counter(n,decimal-leading-zero);position:absolute;left:0;font-family:"Playfair Display",serif;color:var(--faint)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-top:1.5rem}
+.flow b{font-weight:500;border:1px dashed var(--line);padding:.7rem 1.1rem;font-size:.95rem}.flow em{font-style:normal;color:var(--faint)}
+table{width:100%;border-collapse:collapse;margin-top:1.5rem}th,td{text-align:left;padding:.9rem 1rem;border-bottom:1px dashed var(--line);font-size:.95rem}th{font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;color:var(--faint);font-weight:500}
+pre{margin-top:1.5rem;background:var(--dark);color:#fff;padding:1.5rem;overflow:auto;font-size:.9rem;line-height:1.6}
+.fig{display:grid;gap:1.25rem;margin-top:1.5rem}@media(min-width:640px){.fig{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}}
+.fig .ph{aspect-ratio:3/2;background:#e6e6e6;border:1px dashed var(--lines,var(--line));display:grid;place-items:center;font-size:.75rem;text-transform:uppercase;letter-spacing:.18em;color:var(--faint)}
+.fig figcaption{border-top:1px dashed var(--line);margin-top:.75rem;padding-top:.6rem;font-size:.85rem;color:var(--mut)}
+.note{margin-top:1.25rem;border-left:2px solid var(--ink);padding:.25rem 0 .25rem 1rem;max-width:62ch}
+.btn{display:inline-flex;gap:.75rem;margin-top:1.5rem;padding:1rem 2rem;background:var(--ink);color:#fff;font-size:.85rem;text-transform:uppercase;letter-spacing:.14em;transition:opacity .4s}.btn:hover{opacity:.9}
+aside{font-size:.9rem}@media(min-width:1024px){aside{position:sticky;top:6rem;align-self:start}}
+aside .t{font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--faint);margin-top:2rem}aside .t:first-child{margin-top:0}
+aside ul{margin-top:.75rem}aside li{padding:.35rem 0}aside a{color:var(--mut);transition:color .3s}aside a:hover{color:var(--ink)}
+.oth{margin-top:1.5rem;display:grid;gap:1.25rem}@media(min-width:640px){.oth{grid-template-columns:repeat(2,1fr)}}
+.oth a{border-top:1px dashed var(--line);padding-top:1.25rem;display:block;transition:opacity .3s}.oth a:hover{opacity:.7}.oth small{font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--faint)}
+.oth h3{margin-top:.5rem;font-size:1.15rem}.oth p{margin-top:.4rem;font-size:.9rem}
+footer{background:var(--dark);color:#fff;padding:4rem 1.5rem 2rem}footer .c{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}footer p{color:var(--onm);font-size:.875rem}
+.cards{margin-top:3rem;display:grid;gap:2.5rem 3rem}@media(min-width:640px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{border-top:1px dashed var(--line);padding-top:1.75rem;display:block;transition:opacity .3s}.card:hover{opacity:.75}
+.card .n{font-size:1.5rem;color:var(--faint)}.card h3{margin-top:1rem;font-size:1.4rem;font-weight:500}.card p{margin-top:.6rem;color:var(--mut);line-height:1.6}.card .go{display:inline-block;margin-top:1.25rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.14em}.fig img,.fig video{width:100%;display:block;background:#e6e6e6;max-height:32rem;object-fit:contain}main,.fig,.fig figure{min-width:0}pre{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}table{display:block;max-width:100%;overflow-x:auto}img,video{max-width:100%}@media(max-width:639px){header{flex-wrap:wrap;row-gap:.6rem;padding:1rem 1.5rem}header nav{display:flex;order:3;width:100%;overflow-x:auto;justify-content:space-between;gap:.6rem;white-space:nowrap;scrollbar-width:none}header nav::-webkit-scrollbar{display:none}header nav a{font-size:.6rem;letter-spacing:.06em}main{padding-top:2rem}}</style></head>
+<body>
+<header><a class="logo" href="index.html"><i></i><span>hariprasad v</span></a><nav aria-label="Primary"><a href="index.html">Home</a><a href="index.html#story">About</a><a href="index.html#projects">Projects</a><a href="index.html#skills">Skills</a><a href="protosem.html">ProtoSem</a><a href="index.html#contact">Contact</a></nav></header>
+<div class="c"><div class="top"><span class="eb">Week 7 · Task 1 of 5</span><h1>ESP32 Web Server &amp; HTML LED Control</h1><p class="lead">Turn the ESP32 into a web server and switch an LED on and off from a browser page.</p><div class="tabs"><a href="protosem-week-7.html">← Week 7</a><a href="protosem-week-7-task-1.html" class=on>Task 1</a><a href="protosem-week-7-task-2.html">Task 2</a><a href="protosem-week-7-task-3.html">Task 3</a><a href="protosem-week-7-task-4.html">Task 4</a><a href="protosem-week-7-task-5.html">Task 5</a></div></div><div class="lay"><main><section class="s" id="s1"><h2><small>01</small>Overview</h2><p>The ESP32 joins the local Wi-Fi network and runs a small HTTP web server. A browser on the same network opens the ESP32&#x27;s IP address, sees a page with ON and OFF buttons, and each button press switches the ESP32's onboard LED on GPIO 2.</p></section><section class="s" id="s2"><h2><small>02</small>Concepts</h2><h3>ESP32 web server</h3><p>The ESP32 has built-in Wi-Fi, so it can listen for HTTP requests on port 80 and reply with an HTML page, just like a tiny website.</p><h3>Browser ↔ ESP32</h3><p>The browser sends an HTTP GET request to the board&#x27;s IP address. The ESP32 answers with HTML. Both devices must be on the same network.</p><h3>Sending a command</h3><p>Each button links to a URL such as /on or /off. When the ESP32 receives that route it sets the GPIO pin HIGH or LOW and returns the page again.</p></section><section class="s" id="s3"><h2><small>03</small>System Design</h2><div class="flow"><b>Browser</b><em>→</em><b>Wi-Fi router</b><em>→</em><b>ESP32 web server</b><em>→</em><b>GPIO pin</b><em>→</em><b>LED</b></div></section><section class="s" id="s4"><h2><small>04</small>Hardware &amp; Software</h2><h3>Hardware</h3><ul class="ul"><li>ESP32 development board (ESP32 Dev Module)</li><li>Micro-USB cable for power and programming</li><li>Onboard LED on GPIO 2 (no external parts needed)</li></ul><div class="fig"><figure><img src="images/task-1/hardware.jpg" alt="Hardware: ESP32 board and micro-USB cable" loading="lazy"><figcaption>Hardware: ESP32 board and micro-USB cable</figcaption></figure></div><h3>Software &amp; platforms</h3><ul class="ul"><li>Arduino IDE</li><li>ESP32 board package</li><li>WiFi.h and WebServer.h libraries</li><li>Any web browser on the same network</li></ul></section><section class="s" id="s5"><h2><small>05</small>Wiring / Setup</h2><p>This task uses the board's onboard LED, so no extra wiring is needed.</p><table><tr><th>ESP32 pin</th><th>Connects to</th><th>Purpose</th></tr><tr><td>GPIO 2</td><td>Onboard LED</td><td>LED control output</td></tr><tr><td>USB port</td><td>Laptop</td><td>Power and programming</td></tr></table></section><section class="s" id="s6"><h2><small>06</small>Implementation</h2><pre><code>#include &lt;WiFi.h&gt;
+#include &lt;WebServer.h&gt;
+
+// ================================
+// WiFi Credentials
+// ================================
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+// ================================
+// LED Configuration
+// ================================
+#define LED_PIN 2
+
+WebServer server(80);
+bool ledState = false;
+
+// ================================
+// Create Web Page
+// ================================
+String htmlPage() {
+  String html = "";
+  html += "&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;ESP32 LED Control&lt;/title&gt;";
+  html += "&lt;style&gt;body{background:#000;color:#fff;text-align:center;font-family:Arial;padding-top:80px;}";
+  html += "h1{font-size:28px;} .switch{position:relative;display:inline-block;width:60px;height:34px;}";
+  html += ".switch input{display:none;} .slider{position:absolute;top:0;left:0;right:0;bottom:0;background:#555;border-radius:34px;transition:.3s;cursor:pointer;}";
+  html += ".slider:before{position:absolute;content:'';height:26px;width:26px;left:4px;bottom:4px;background:white;border-radius:50%;transition:.3s;}";
+  html += "input:checked + .slider{background:#4CAF50;} input:checked + .slider:before{transform:translateX(26px);}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;";
+  html += "&lt;h1&gt;ESP32 LED Control&lt;/h1&gt;";
+  html += "&lt;label class='switch'&gt;&lt;input type='checkbox' id='ledSwitch' onchange='toggleLED()' " + String(ledState ? "checked" : "") + "&gt;&lt;span class='slider'&gt;&lt;/span&gt;&lt;/label&gt;";
+  html += "&lt;p id='status'&gt;LED is " + String(ledState ? "ON" : "OFF") + "&lt;/p&gt;";
+  html += "&lt;script&gt;function toggleLED(){var xhr=new XMLHttpRequest();var state=document.getElementById('ledSwitch').checked;";
+  html += "xhr.open('GET', state ? '/on' : '/off', true);xhr.onload=function(){document.getElementById('status').innerText='LED is '+(state?'ON':'OFF');};xhr.send();}&lt;/script&gt;";
+  html += "&lt;/body&gt;&lt;/html&gt;";
+  return html;
+}
+
+// ================================
+// Route Handlers
+// ================================
+void handleRoot() { server.send(200, "text/html", htmlPage()); }
+
+void handleOn()  { ledState = true;  digitalWrite(LED_PIN, HIGH); server.send(200, "text/plain", "LED is ON"); }
+void handleOff() { ledState = false; digitalWrite(LED_PIN, LOW);  server.send(200, "text/plain", "LED is OFF"); }
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  Serial.println("================================");
+  Serial.println("ESP32 WiFi LED Control");
+  Serial.println("================================");
+
+  Serial.print("Connecting to WiFi...");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.println("WiFi connected!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", handleRoot);
+  server.on("/on", handleOn);
+  server.on("/off", handleOff);
+  server.begin();
+
+  Serial.println("Web server started!");
+  Serial.println("Open the IP address in your browser.");
+}
+
+void loop() {
+  server.handleClient();
+}</code></pre><p style="margin-top:1.5rem">Key sections of the code:</p><ul class="ul"><li>Include the Wi-Fi and WebServer libraries</li><li>Wi-Fi name and password</li><li>Create the server object on port 80</li><li>Route handlers for the page, /on and /off</li><li>setup() connects to Wi-Fi and starts the server; loop() calls handleClient()</li></ul><div class="fig"><figure><img src="images/task-1/compile.jpg" alt="Compile" loading="lazy"><figcaption>Compile</figcaption></figure><figure><video controls preload="metadata" src="images/task-1/upload.mp4"></video><figcaption>Upload</figcaption></figure></div></section><section class="s" id="s7"><h2><small>07</small>Configuration</h2><ol class="n"><li>Select ESP32 Dev Module in Tools → Board</li><li>Select the correct COM port in Tools → Port (COM9 here)</li><li>Open the Serial Monitor at 115200 baud to read the IP address</li></ol><div class="fig"><figure><img src="images/task-1/board.jpg" alt="Board" loading="lazy"><figcaption>Board</figcaption></figure><figure><img src="images/task-1/port.jpg" alt="Port" loading="lazy"><figcaption>Port</figcaption></figure><figure><img src="images/task-1/serial-monitor.jpg" alt="Serial Monitor" loading="lazy"><figcaption>Serial Monitor</figcaption></figure></div></section><section class="s" id="s8"><h2><small>08</small>Evidence</h2><div class="fig"><figure><img src="images/task-1/led-off.jpg" alt="LED off" loading="lazy"><figcaption>LED off</figcaption></figure><figure><img src="images/task-1/led-on.jpg" alt="LED on" loading="lazy"><figcaption>LED on</figcaption></figure><figure><img src="images/task-1/web-interface-off.jpg" alt="Web interface" loading="lazy"><figcaption>Web interface</figcaption></figure><figure><video controls preload="metadata" src="images/task-1/demo.mp4"></video><figcaption>Live demo</figcaption></figure></div></section><section class="s" id="s9"><h2><small>09</small>Challenges &amp; Fixes</h2><ul class="ul"><li><strong>The IP address kept changing between test runs.</strong> The first time I ran the sketch I bookmarked the IP from the Serial Monitor, but after restarting the router the ESP32 was handed a different address by DHCP and the old bookmark just timed out. I got into the habit of re-opening the Serial Monitor after every power cycle and reading the printed <code>WiFi.localIP()</code> line before touching the browser, instead of assuming the address would stay the same.</li><li><strong>The LED didn’t respond the first time I toggled it.</strong> I’d initially written the sketch expecting an external LED on a GPIO pin with a resistor, the way most tutorials set it up, but the ESP32 Dev Module I’m using only has the onboard LED wired to GPIO 2. Nothing happened when I hit the switch because I was driving the wrong assumption, not the wrong pin. Once I set <code>LED_PIN</code> to 2 and pointed the code at the onboard LED instead of external wiring, it toggled correctly on both the board and the web page.</li><li><strong>The page wouldn’t load on my phone at first.</strong> My laptop was on the protosem Wi-Fi network but my phone had fallen back to mobile data, so the IP printed in the Serial Monitor was unreachable from it. The fix was just making sure both devices were joined to the same network before entering the address — an easy thing to overlook since the browser gives no error explaining why the page won’t load.</li></ul></section><section class="s" id="s10"><h2><small>10</small>Reflection</h2><p>Building this made the request/response cycle feel concrete instead of abstract. Every time I tap the toggle, the browser fires off a plain GET request to <code>/on</code> or <code>/off</code>, the ESP32’s <code>WebServer</code> matches that path to a handler, flips the pin, and sends a short text response back — there’s no magic in between, just a tiny device on my network answering HTTP requests the same way a real web server would. Watching the Serial Monitor log each request as I clicked the switch made it obvious that the “web” here is really just my laptop and the ESP32 talking directly to each other over Wi-Fi.</p><p>If I were to take this further, I’d add proper state feedback instead of trusting the client-side toggle blindly — right now the page assumes the request succeeded rather than confirming the LED’s actual state. I’d also like to control more than one LED from the same page, and add at least basic authentication before opening this up to anything beyond a closed classroom network, since right now anyone on the same Wi-Fi can hit <code>/on</code> and <code>/off</code> with no login at all.</p></section><section class="s" id="s11"><h2><small>11</small>Repository Link</h2><p>Source code for this task is on GitHub.</p><a class="btn" href="https://github.com/Hari368-sys/ESP32-Web-Server-HTML-LED-Control" target="_blank" rel="noopener">Open Task 1 on GitHub →</a></section><section class="s"><h2>Other tasks</h2><div class="oth"><a href="protosem-week-7-task-2.html"><small>Task 2</small><h3>Adafruit IO Dashboard &amp; MQTT</h3><p>Control the LED from an Adafruit IO cloud dashboard using MQTT.</p></a><a href="protosem-week-7-task-3.html"><small>Task 3</small><h3>IFTTT + Adafruit IO IoT Automation</h3><p>Trigger an IFTTT applet that drives an Adafruit IO feed and the ESP32 automatically.</p></a><a href="protosem-week-7-task-4.html"><small>Task 4</small><h3>Firebase IoT Monitoring Dashboard</h3><p>Monitor temperature, humidity and light in a login-protected Firebase dashboard and control a bulb.</p></a><a href="protosem-week-7-task-5.html"><small>Task 5</small><h3>Firebase Logging, Automation &amp; Data Export</h3><p>The complete system: automatic LDR lighting, Firebase data logging, charts and CSV export.</p></a></div></section></main><aside><p class="t">Tasks</p><ul><li><a href="protosem-week-7-task-1.html">1. ESP32 Web Server &amp; HTML LED Control</a></li><li><a href="protosem-week-7-task-2.html">2. Adafruit IO Dashboard &amp; MQTT</a></li><li><a href="protosem-week-7-task-3.html">3. IFTTT + Adafruit IO IoT Automation</a></li><li><a href="protosem-week-7-task-4.html">4. Firebase IoT Monitoring Dashboard</a></li><li><a href="protosem-week-7-task-5.html">5. Firebase Logging, Automation &amp; Data Export</a></li></ul><p class="t">On this page</p><ul><li><a href="#s1">01 Overview</a></li><li><a href="#s2">02 Concepts</a></li><li><a href="#s3">03 System Design</a></li><li><a href="#s4">04 Hardware &amp; Software</a></li><li><a href="#s5">05 Wiring / Setup</a></li><li><a href="#s6">06 Implementation</a></li><li><a href="#s7">07 Configuration</a></li><li><a href="#s8">08 Evidence</a></li><li><a href="#s9">09 Challenges &amp; Fixes</a></li><li><a href="#s10">10 Reflection</a></li><li><a href="#s11">11 Repository Link</a></li></ul></aside></div></div>
+<footer><div class="c"><p>© 2026 Hariprasad V. All rights reserved.</p><p>ProtoSem · Week 7</p></div></footer></body></html>
